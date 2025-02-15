@@ -1,101 +1,118 @@
-import Image from "next/image";
+"use client"
+import axios from "axios";
+import { useRouter } from "next/navigation";
+import { useEffect, useState, useRef } from "react";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              app/page.js
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [characters, setCharacters] = useState([]);
+  const [filteredCharacters, setFilteredCharacters] = useState([]);
+  const itemsPerPage = 12;
+  const allPeople = useRef([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  let startIndex = (currentPage - 1)*itemsPerPage;
+  const totalPages = Math.ceil(filteredCharacters.length/itemsPerPage);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const router = useRouter();
+
+
+  const fetchCharacters = async () => {
+    let url = 'https://swapi.dev/api/people/';
+    while(url){
+      try{
+        let res = await axios.get(url);
+        console.log(res.data);
+        allPeople.current = [...allPeople.current, ...res.data.results];
+        url = res.data.next;
+      }
+      catch(error){
+        console.error("Error fetching character data: ", error);
+      }
+      filterCharacters();
+    }
+  };
+  useEffect( () => {
+    fetchCharacters();
+    console.log("Characters: " + allPeople); 
+  }, []);
+
+  const filterCharacters = (search = "") => {
+    if(search == "")
+        search = searchTerm;
+    let people = allPeople.current;
+    people = people.filter((person) => person.name.toUpperCase().includes(search.toUpperCase()));
+    setFilteredCharacters(people);
+    handlePagination(1, people);
+  }
+  
+  const handlePagination = (targetPage, people = "") => {
+    if(people == "")
+        people = filteredCharacters;
+    people = people.slice((targetPage - 1)*itemsPerPage, itemsPerPage*targetPage);
+    setCharacters(people);
+    console.log(startIndex);
+    console.log(itemsPerPage*currentPage);
+    setCurrentPage(targetPage);
+  }
+
+  const handleSearch = (e) => {
+    setSearchTerm(e.target.value);
+    filterCharacters(e.target.value);
+  }
+
+  return (
+    <>
+      <div className="py-2 bg-sky-900 flex items-center">
+        <h1 className="m-auto text-lg text-gray-300">Star Wars Characters Catalogue</h1>
+      </div>
+      <div className="bg-gray-500 min-h-full absolute flex flex-col justify-evenly text-gray-300 self-center items-center">
+        <div className="text-gray-900 font-semibold w-1/4">
+          <input 
+            type="text"
+            placeholder="Type to Search..."
+            value={searchTerm}
+            onChange={handleSearch}
+            autoFocus={true}
+            className="w-full p-2 m-2 rounded-lg bg-gray-300"
+          />
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+        <main className="flex flex-row flex-wrap gap-5 justify-center">
+          { 
+            characters.map((char, index) => 
+              <div key={char.name} className="flex flex-col justify-center items-center gap-4 px-8 rounded-lg mx-2 py-6 bg-gray-800">
+                <h1 className="font-semibold text-lg min-w-48 py-12 bg-gray-700 text-center hover:underline" onClick={()=>router.push(`character/${index + 1}`)}>{char.name}</h1>
+                <h3>Height: {char.height} cm</h3>
+                <h3>Gender: {char.gender}</h3>
+                <h3>Birth Year: {char.birth_year}</h3>
+              </div>
+            )
+          }
+        </main>
+        <footer className="mt-2 flex flex-col gap-2 items-center text-gray-900">
+          
+          <h3>Showing {currentPage} of {totalPages} Pages</h3>
+          <div>
+            <button className={`rounded-md bg-gray-400 p-2 m-1 ${currentPage == 1 ? "text-gray-600" : ""}`} onClick={() => handlePagination(currentPage - 1)}
+              disabled = {currentPage == 1}
+            >
+              {"<< Previous"}
+            </button>
+            {
+              Array.from({length: totalPages}, (_, index) => 
+                <button key={index} onClick={() => handlePagination(index + 1)}
+                className={`px-2 py-1 m-1 rounded-md bg-gray-400 ${currentPage == index + 1 ? "bg-gray-600" : "bg-gray-300"}`}
+                  >
+                    {index + 1}
+                </button>
+            )}
+            <button className={`rounded-md bg-gray-400 p-2 ${currentPage == totalPages ? "text-gray-600" : "bg-gray-300"}`} onClick={() => handlePagination(currentPage + 1)}
+              disabled = {currentPage == totalPages}
+            >
+              {"Next >>"}
+            </button>
+          </div>
+        </footer>
+      </div>
+    </>
   );
 }

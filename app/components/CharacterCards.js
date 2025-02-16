@@ -13,7 +13,6 @@ export default function CharacterCards({allCharacters = []}) {
     , [totalPages]);
 
     const handlePagination = (targetPage = 1) => {
-        console.log(allCharacters);
         let arr = allCharacters.slice((targetPage - 1)*itemsPerPage, itemsPerPage*targetPage);
         setCharacters(arr);
         setCurrentPage(targetPage);
@@ -21,17 +20,17 @@ export default function CharacterCards({allCharacters = []}) {
 
     return (
         <div>
-            <main className="flex flex-row flex-wrap gap-5 justify-center">
+            <main className="flex flex-row flex-wrap gap-5 justify-center mx-10">
             { 
-                characters.map((char, index) => 
+                characters.map((char) => 
                     <div key={char.name} 
-                        className="flex flex-col justify-center items-center gap-4 px-8 rounded-lg mx-2 py-6 bg-gray-800"
+                        className="flex flex-col justify-center items-center gap-6 px-8 rounded-lg py-4 bg-gray-800"
                     >
-                        <h1 className="font-semibold text-lg min-w-48 py-12 bg-gray-700 text-center hover:underline" 
-                            onClick={()=>router.push(`character/${index + 1}`)}
+                        <button className="font-semibold text-lg min-w-48 py-8 bg-gray-700 text-center hover:underline hover:cursor-pointer" 
+                            onClick={()=> router.push(`character/${char.url.slice(29, -1)}`)}
                         >
                             {char.name}
-                        </h1>
+                        </button>
                         <h3>Height: {char.height} cm</h3>
                         <h3>Gender: {char.gender}</h3>
                         <h3>Birth Year: {char.birth_year}</h3>
@@ -47,14 +46,14 @@ export default function CharacterCards({allCharacters = []}) {
                         onClick={() => handlePagination(currentPage - 1)}
                         disabled = {currentPage == 1}
                     >
-                        {"<< Previous"}
+                        {"<< Prev"}
                     </button>
                     {
                         Array.from({length: totalPages}, (_, index) => 
                             <button 
                                 key={index} 
                                 onClick={() => handlePagination(index + 1)}
-                                className={`px-2 py-1 m-1 rounded-md bg-gray-400 ${currentPage == index + 1 ? "bg-gray-600" : "bg-gray-300"}`}
+                                className={`p-2 m-1 rounded-md bg-gray-400 ${currentPage == index + 1 ? "bg-gray-600" : "bg-gray-300"}`}
                             >
                                 {index + 1}
                             </button>

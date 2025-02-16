@@ -10,13 +10,17 @@ export default function characterDetails() {
     const [details, setDetails] = useState({});
 
     useEffect( () => {
+        document.title = 'Character Details'
         fetchCharacterDetails();
     }, []);
   
     const fetchCharacterDetails = async () => {
+        console.log(param.id);
         let url = 'https://swapi.dev/api/people/' + param.id;
         try{
             const res = await axios.get(url);
+            setDetails({...res.data, homeworld: "", films: []});
+            document.title = `${res.data.name} Details`;
             const homeworldRes = await axios.get(res.data.homeworld); 
             setDetails({...res.data, homeworld: homeworldRes.data.name, films: []});
             fetchFilms(res.data.films);
@@ -39,7 +43,7 @@ export default function characterDetails() {
   return (
     <>
         <Navbar/>
-        <div className="mt-2 m-auto bg-gray-500 flex flex-col gap-6 items-center justify-center w-1/4 p-4 border-2 shadow-md border-gray-300 text-gray-200">
+        <div className="mt-2 sm:mt-10 max-w-lg bg-gray-500 m-auto flex flex-col items-center md:gap-4 gap-2 p-4 border-2 shadow-md border-gray-300 text-gray-200">
             <h1 className="font-semibold text-lg min-w-72 py-12 bg-gray-700 text-center">{details.name}</h1>
             <h3>Height: {details.height} cm</h3>
             <h3 className="capitalize">Gender: {details.gender}</h3>

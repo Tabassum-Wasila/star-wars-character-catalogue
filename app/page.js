@@ -1,4 +1,5 @@
-"use client"
+'use client'
+
 import axios from "axios";
 import { useEffect, useState, useRef } from "react";
 import Navbar from "@/app/components/Navbar";
@@ -39,10 +40,12 @@ export default function Home() {
     setFilteredCharacters(people);
   }
 
-  const handleSearch = (e) => {
-    setSearchTerm(e.target.value);
-    filterCharacters(e.target.value);
-  }
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      filterCharacters(searchTerm);
+    }, 300);
+    return () => clearTimeout(timeout);
+  }  ,[searchTerm]);
 
   return (
     <>
@@ -58,7 +61,7 @@ export default function Home() {
                 type="text"
                 placeholder="Type to Search..."
                 value={searchTerm}
-                onChange={handleSearch}
+                onChange={(e) => setSearchTerm(e.target.value)}
                 autoFocus={true}
                 className="w-full p-2 my-2 rounded-lg bg-gray-300"
               />

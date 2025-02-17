@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# SWAPI Character Catalog
+
+This is a [Next.js](https://nextjs.org) project that displays a catalog of Star Wars characters using data from the [SWAPI](https://swapi.dev) API. The project was bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started
 
-First, run the development server:
+### Installation
+
+First, install the dependencies:
+
+```bash
+npm install
+# or
+yarn install
+
+```
+### Running the Development Server
+
+Then, run the development server:
 
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+You can start editing the page by modifying [`app/page.js`](app/page.js). The page auto-updates as you edit the file.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Project Structure
 
-## Learn More
+- `app/`: Contains the main application code.
+  - `character/[id]/page.js`: Displays the details of a specific character.
+  - `components/`: Contains reusable components like `Navbar` and `CharacterCards`.
+  - `globals.css`: Global CSS styles.
+  - `layout.js`: Root layout component.
+  - `page.js`: Home page that lists all characters.
+- `.next/`: Contains build artifacts and cache.
+- `public/`: Contains public assets like images.
+- `eslint.config.mjs`: ESLint configuration.
+- `jsconfig.json`: JavaScript configuration for module resolution.
+- `next.config.mjs`: Next.js configuration.
+- `postcss.config.mjs`: PostCSS configuration.
+- `tailwind.config.mjs`: Tailwind CSS configuration.
+- `package.json`: Project dependencies and scripts.
 
-To learn more about Next.js, take a look at the following resources:
+## API Fetching
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The project fetches data from the SWAPI API using the `axios` library. The data fetching is done in the following components:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- [`app/page.js`](app/page.js): Fetches the list of characters from the SWAPI API and stores them in a state variable. The data is fetched in a loop to handle pagination from the API.
+- [`app/character/[id]/page.js`](app/character/[id]/page.js): Fetches the details of a specific character, including their homeworld and films, using the character ID from the URL parameters.
 
-## Deploy on Vercel
+## Pagination
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Pagination is implemented in the [`CharacterCards`](app/components/CharacterCards.js) component. The component displays a subset of characters based on the current page and the total number of characters. The pagination controls allow the user to navigate between pages.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Search
+
+The search functionality is implemented in the [`app/page.js`](app/page.js) component. The search input filters the list of characters based on the search term entered by the user. The filtering is done using a `useEffect` hook that updates the filtered list of characters whenever the search term changes.
+
+To improve performance, the search input is debounced. This means that the search function is delayed by 500ms to prevent it from being called too frequently. This is implemented using the `setTimeout` function inside `useEffect`.
+
+
+## Additional Features and Improvements
+
+- **Responsive Design**: The project uses Tailwind CSS for responsive design and styling.
+- **Dynamic Page Titles**: The page titles are dynamically updated based on the character details.
+- **Loading State**: A loading state is displayed while the character data is being fetched.
+- **Error Handling**: Basic error handling is implemented to log errors during data fetching.

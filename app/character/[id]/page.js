@@ -22,7 +22,7 @@ export default function characterDetails() {
             setDetails({...res.data, homeworld: "", films: []});
             document.title = `${res.data.name} Details`;
             const homeworldRes = await axios.get(res.data.homeworld); 
-            setDetails({...res.data, homeworld: homeworldRes.data.name, films: []});
+            setDetails(prev => ({...prev, homeworld: homeworldRes.data.name}));
             fetchFilms(res.data.films);
         }
         catch(error){
@@ -34,10 +34,9 @@ export default function characterDetails() {
         let films = [];
         for(const url of urls){
             let film = await axios.get(url);
-            console.log(film);
             films = [...films, film.data.title];
+            setDetails((prev) => ({...prev, films: films}));
         }
-        setDetails((prev) => ({...prev, films: films}));
     }
 
   return (

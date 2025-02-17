@@ -27,8 +27,8 @@ export default function Home() {
       }
       setFilteredCharacters(allPeople.current);
     }
-    console.log(allPeople);
   };
+  
   useEffect( () => {
     document.title = 'Star Wars Characters';
     fetchCharacters();
@@ -43,7 +43,7 @@ export default function Home() {
   useEffect(() => {
     const timeout = setTimeout(() => {
       filterCharacters(searchTerm);
-    }, 300);
+    }, 500);
     return () => clearTimeout(timeout);
   }  ,[searchTerm]);
 

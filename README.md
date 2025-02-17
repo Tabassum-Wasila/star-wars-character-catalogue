@@ -27,22 +27,14 @@ yarn dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying [`app/page.js`](app/page.js). The page auto-updates as you edit the file.
-
 ## Project Structure
 
 - `app/`: Contains the main application code.
   - `character/[id]/page.js`: Displays the details of a specific character.
   - `components/`: Contains reusable components like `Navbar` and `CharacterCards`.
   - `globals.css`: Global CSS styles.
-  - `layout.js`: Root layout component.
   - `page.js`: Home page that lists all characters.
-- `.next/`: Contains build artifacts and cache.
 - `public/`: Contains public assets like images.
-- `eslint.config.mjs`: ESLint configuration.
-- `jsconfig.json`: JavaScript configuration for module resolution.
-- `next.config.mjs`: Next.js configuration.
-- `postcss.config.mjs`: PostCSS configuration.
 - `tailwind.config.mjs`: Tailwind CSS configuration.
 - `package.json`: Project dependencies and scripts.
 
